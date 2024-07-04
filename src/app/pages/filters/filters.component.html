@@ -1,0 +1,55 @@
+<div class="card">
+  <div class="card-header d-flex justify-content-between">
+    <button
+      (click)="addFilter()"
+      class="btn btn-success px-3 ms-2">
+      Add Filter
+    </button>
+
+    <div class="ms-5 w-50">
+      <select ngbDropdown class="form-control" [(ngModel)]="mode">
+        <option value="non-modal">non-modal</option>
+        <option value="modal">modal</option>
+      </select>
+    </div>
+
+    <button
+      (click)="loadPage()"
+      class="btn btn-success px-3 ms-2">
+      Get Filters
+    </button>
+  </div>
+  <div
+    class="card-body"
+  >
+  <app-add-filter (ready)="onReady()" *ngIf="mode === 'non-modal' && isShow"></app-add-filter>
+    <table class="table table table-hover table-vertical-middle">
+      <thead>
+        <tr>
+          <th scope="col">Filter name</th>
+          <th scope="col">Selection</th>
+          <th scope="col">Criteria County</th>
+          <th
+            scope="col"
+            class="text-end">
+            ...
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of list">
+          <td>{{ item.filterName  }}</td>
+          <td>{{ item.selection  }}</td>
+          <td>{{ item.criteria.length  }}</td>
+
+          <td class="text-end">
+            <button
+              class="btn btn-danger btn-sm me-2"
+              (click)="onDelete(item.id)"
+            >Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

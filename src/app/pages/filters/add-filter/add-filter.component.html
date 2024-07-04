@@ -1,0 +1,131 @@
+<div class="modal-header d-flex justify-content-between">
+  <h5 class="modal-title">Filter</h5>
+  <button
+    type="button"
+    class="close btn"
+    data-dismiss="modal"
+    aria-label="Close"
+    (click)="ready.next()"
+  >
+    <span aria-hidden="true">×</span>
+  </button>
+</div>
+<form
+  *ngIf="form"
+  [formGroup]="form!"
+  (ngSubmit)="onSubmit()"
+>
+  <div class="modal-body p-3 mx-3">
+    <div class="container">
+      <div class="row my-2">
+        <div class="col-2">
+          <label>
+            Filter Name
+          </label>
+        </div>
+        <div class="col-10">
+          <input class="form-control" formControlName="filterName" type="text">
+        </div>
+      </div>
+      <div class="row my-2">
+        <div class="col-2">
+          <label>
+            Criteria
+          </label>
+        </div>
+        <div formArrayName="criteria" class="col-10">
+          <div *ngFor="let criteria of criteries; let index = index" [formGroupName]="index" class="w-100 row justify-content-between mb-2">
+            <div class="col">
+              <select ngbDropdown class="form-control" formControlName="field">
+                <option *ngFor="let item of fields" [value]="item">{{item | titlecase}}</option>
+              </select>
+            </div>
+            <div class="col">
+              <div [ngSwitch]="criteria.get('field')!.value">
+                <div *ngSwitchCase="Field.Title">
+                  <select ngbDropdown class="form-control" formControlName="condition">
+                    <option *ngFor="let item of TitleConditions" [value]="item">{{item | replace: '_' : ' ' | titlecase }}</option>
+                  </select>
+                </div>
+                <div *ngSwitchCase="Field.Amount">
+                  <select ngbDropdown class="form-control" formControlName="condition">
+                    <option *ngFor="let item of AmountConditions" [value]="item">{{item | replace: '_' : ' ' | titlecase}}</option>
+                  </select>
+                </div>
+                <div class="d-flex" *ngSwitchCase="Field.Date">
+                  <select ngbDropdown class="form-control" formControlName="condition">
+                    <option *ngFor="let item of DateConditions" [value]="item">{{item | replace: '_' : ' ' | titlecase}}</option>
+                  </select>
+                </div>
+                <div *ngSwitchDefault></div>
+              </div>
+
+            </div>
+            <div class="col">
+              <div [ngSwitch]="criteria.get('field')!.value">
+                <div *ngSwitchCase="Field.Title">
+                  <input class="form-control" type="text" formControlName="value">
+                </div>
+                <div *ngSwitchCase="Field.Amount">
+                  <input class="form-control" type="number" formControlName="value">
+                </div>
+                <div class="d-flex" *ngSwitchCase="Field.Date">
+                  <input
+                    class="form-control"
+                    formControlName="value"
+                    placeholder="date"
+                    ngbDatepicker
+                    #date="ngbDatepicker"
+                    (click)="date.toggle()"
+                    (dateSelect)="date.onFocus()" />
+                </div>
+                <div *ngSwitchDefault></div>
+              </div>
+            </div>
+            <div *ngIf="criteries.length !== 1" class="col-1">
+              <button class="btn btn-danger" (click)="deleteField(index)">Delete</button>
+            </div>
+          </div>
+          <div class="w-100 d-flex justify-content-center">
+            <button (click)="addField()" type="button" class="btn btn-secondary">
+              Add Row
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="row my-2">
+        <div class="col-2">
+          <label>
+            Selection
+          </label>
+        </div>
+        <div class="col-10 d-flex">
+          <div *ngFor="let selectionItem of selections; let first = first" class="form-check" [ngClass]="{'ms-2': !first}">
+            <input formControlName="selection" class="form-check-input" type="radio" name="selection" [id]="selectionItem" [value]="selectionItem">
+            <label class="form-check-label" [for]="selectionItem">
+              {{selectionItem | replace: '_' : ' ' | titlecase}}
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-secondary px-5"
+      [disabled]="form.disabled"
+      (click)="ready.next()"
+    >
+      Cancel
+    </button>
+    <button
+      type="submit"
+      class="btn btn-primary px-5 ms-2"
+      [disabled]="form.disabled"
+    >
+      Save
+    </button>
+  </div>
+</form>
